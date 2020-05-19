@@ -1,12 +1,30 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AppNavigator from './AppNavigation/AppNavigator';
+import {combineReducers, createStore, applyMiddleware} from 'redux';
+import { Provider} from  'react-redux';
+import ReduxThunk from 'redux-thunk'
+import place_reducer from './store/place_reducer';
+import {init} from './helper/db';
+
+  init()
+  .then(()=>{
+    console.log('Database initialized');
+  })
+  .catch(err=>{
+    console.log('Database initilization failed');
+    console.log(err);
+  })
+  const combReducers=combineReducers({
+    places: place_reducer
+  })
+  
+  const store = createStore(combReducers, applyMiddleware(ReduxThunk));
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+  return  <Provider store={store}>
+            <AppNavigator />
+          </Provider>
 }
 
 const styles = StyleSheet.create({
